@@ -3,17 +3,18 @@ const film=document.querySelector('#hero-video');
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 let filmVisible=true;
 film.muted=true;
-/* iOS Safari blocks autoplay outright in Low Power Mode, muted and inline or not.
-   When play() is refused we keep the poster up and let the first tap start it,
-   rather than leaving the visitor on a still frame with no way in. */
-let tapArmed=false;
-const armTapToPlay=()=>{
-  if(tapArmed)return;tapArmed=true;
-  const go=()=>{film.play().then(()=>{tapArmed=false}).catch(()=>{});document.removeEventListener('touchend',go);document.removeEventListener('click',go);};
-  document.addEventListener('touchend',go,{passive:true});
-  document.addEventListener('click',go);
-};
-const resumeFilm=()=>{if(!reducedMotion.matches&&filmVisible&&!document.hidden)film.play().catch(armTapToPlay);};
+/* iOS refuses autoplay outright in Low Power Mode, muted and inline or not, so
+   the film has to offer a way in rather than sitting on its poster forever. The
+   cue appears only once play() has actually been refused, and a tap anywhere on
+   the hero works as well as the button itself. */
+const playCue=document.querySelector('.film-play');
+const hero=document.querySelector('.hero-film');
+const showCue=()=>{playCue.hidden=false;};
+const startFilm=()=>{film.play().catch(()=>{});};
+playCue.addEventListener('click',startFilm);
+hero.addEventListener('click',e=>{if(!playCue.hidden&&!e.target.closest('a,button'))startFilm();});
+film.addEventListener('playing',()=>{playCue.hidden=true;});
+const resumeFilm=()=>{if(!reducedMotion.matches&&filmVisible&&!document.hidden)film.play().catch(showCue);};
 if(reducedMotion.matches){film.autoplay=false;film.pause();}else{resumeFilm();}
 reducedMotion.addEventListener('change',e=>{if(e.matches)film.pause();else resumeFilm();});
 new IntersectionObserver(entries=>{filmVisible=entries[0].isIntersecting;if(!filmVisible)film.pause();else resumeFilm();},{threshold:.1}).observe(film);

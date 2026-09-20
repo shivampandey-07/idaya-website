@@ -79,6 +79,7 @@ header nav a:hover:after,header nav a:focus-visible:after{transform:scaleX(1)}
 .button:hover:before{transform:none}
 .button span{display:inline-block;transition:transform .45s var(--ease)}
 .button:hover span{transform:translate(4px,-4px)}
+.button.to-section:hover span{transform:translateY(4px)}
 .light{background:var(--cream);color:var(--maroon)}
 .light:before{background:var(--gold)}
 .light:hover{color:var(--maroon-dk)}
@@ -92,6 +93,15 @@ header nav a:hover:after,header nav a:focus-visible:after{transform:scaleX(1)}
 .text-button:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform-origin:right;transition:transform .45s var(--ease)}
 .text-button:hover:after{transform:scaleX(0);transform-origin:left}
 
+/* ── Link icons ─────────────────────────────────────────────────────────────
+   Drawn, not typed. iOS gives U+2197 an emoji presentation and renders it as a
+   blue tile, so the arrows that read as hairlines on a desktop turned into
+   chunky blue squares on every phone. These inherit currentColor instead, so
+   one sprite serves gold on maroon, maroon on cream and cream on terracotta. */
+.ico{display:inline-block;width:.85em;height:.85em;flex:none;vertical-align:-.09em;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
+a .ico,button .ico{margin-left:.6em}
+.button span .ico,.header-cta span .ico{margin-left:0}
+
 /* ── Hero ───────────────────────────────────────────────────────────────── */
 .hero-film{position:relative;isolation:isolate;overflow:hidden;background:var(--maroon-dk);color:var(--cream);min-height:600px}
 /* Safari — iOS above all — will not composite a <video> that sits on a negative
@@ -101,6 +111,15 @@ header nav a:hover:after,header nav a:focus-visible:after{transform:scaleX(1)}
 .hero-film:before{content:'';position:absolute;inset:-80px;z-index:0;background:url('assets/idaya-film-poster.jpg') center/cover no-repeat;filter:blur(70px) saturate(1.3) brightness(.42)}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;z-index:1;object-fit:cover;object-position:center 45%}
 .film-shade{position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,rgba(29,10,16,.82),rgba(29,10,16,.36) 58%,rgba(29,10,16,.14)),linear-gradient(0deg,rgba(29,10,16,.6),transparent 42%)}
+/* Shown only once play() has actually been refused - iOS blocks autoplay
+   outright in Low Power Mode - so the film reads as an invitation rather than
+   a still that will not move. */
+.film-play{position:absolute;left:50%;top:clamp(130px,27%,260px);transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--gold-lt);font:400 9px/1 var(--ui);letter-spacing:.26em;text-transform:uppercase}
+.film-play[hidden]{display:none}
+.film-play svg{width:56px;height:56px}
+.film-play circle{fill:rgba(29,10,16,.5);stroke:rgba(237,201,106,.75);stroke-width:1}
+.film-play path{fill:var(--gold-lt)}
+.film-play:hover circle{fill:rgba(29,10,16,.7);stroke:var(--gold)}
 .hero-copy{display:flex;flex-direction:column;align-items:flex-start;padding:46px var(--gut) 30px;position:relative;z-index:4}
 .hero-copy .eyebrow{color:var(--gold)}
 h1{font-size:clamp(50px,7.6vw,104px);font-weight:300;letter-spacing:-.025em;margin-bottom:30px}
@@ -203,6 +222,7 @@ dialog .button{width:100%;margin-top:13px;justify-content:center;gap:14px}
   .hero-film{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(32px,4vw,78px);min-height:min(680px,calc(100svh - var(--head-h) - 40px));padding:clamp(46px,4.4vw,72px) var(--gut) clamp(30px,2.6vw,44px)}
   .hero-video{position:relative;inset:auto;z-index:3;grid-column:2;grid-row:1;height:min(74vh,700px,60vw);width:auto;aspect-ratio:9/16;object-position:center;justify-self:end;align-self:center;box-shadow:0 40px 90px -32px rgba(0,0,0,.8);outline:1px solid rgba(237,201,106,.34);outline-offset:9px;animation:filmIn 1.3s var(--ease) both .2s}
   .hero-copy{grid-column:1;grid-row:1;height:100%;padding:0}
+  .film-play{position:relative;left:auto;top:auto;transform:none;grid-column:2;grid-row:1;justify-self:center;align-self:center}
 }
 
 /* ── Mobile ─────────────────────────────────────────────────────────────── */
