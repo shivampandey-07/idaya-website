@@ -69,24 +69,28 @@ main,header,footer{max-width:none;margin:0}
 .footer-contact{gap:14px;font-size:12px}
 }
 
-/* ── Lotus mark ────────────────────────────────────────────────────────────
-   One SVG, painted with currentColor through a mask so it takes the gold,
-   cream or maroon of whatever it sits in. */
-.mark{display:inline-block;flex:none;background-color:currentColor;-webkit-mask:url('assets/idaya-mark.svg') center/contain no-repeat;mask:url('assets/idaya-mark.svg') center/contain no-repeat}
-.wordmark{display:flex;align-items:center;gap:15px}
-.wordmark .wm-text{display:block;font:inherit;letter-spacing:inherit;margin:0}
-.wordmark .mark{width:33px;height:48px}
-.footer-logo{display:flex;align-items:center;gap:13px}
-.footer-logo .mark{width:30px;height:43px}
-.dialog-mark{width:29px;height:42px;color:#50202c;margin-bottom:15px}
+/* ── Brand lockup ──────────────────────────────────────────────────────────
+   The lotus mark and the idaya script are both painted through a CSS mask
+   with currentColor, so the one pair of files serves maroon on cream, gold
+   on terracotta and gold on maroon without a separate export for each. */
+.mark,.wm-type{display:inline-block;flex:none;background-color:currentColor}
+.mark{-webkit-mask:url('assets/idaya-mark.svg') center/contain no-repeat;mask:url('assets/idaya-mark.svg') center/contain no-repeat}
+.wm-type{-webkit-mask:url('assets/idaya-wordmark.png') center/contain no-repeat;mask:url('assets/idaya-wordmark.png') center/contain no-repeat}
+.wordmark{display:flex;align-items:center;gap:14px;letter-spacing:0}
+.wordmark .mark{width:38px;height:50px}
+.wordmark .wm-type{width:112px;height:73px}
+.footer-logo{display:flex;align-items:center;gap:12px}
+.footer-logo .mark{width:34px;height:45px}
+.footer-logo .wm-type{width:100px;height:66px}
+.dialog-mark{width:29px;height:39px;color:#50202c;margin-bottom:15px}
 
 /* ── Instagram showcase ────────────────────────────────────────────────────
    embed.js is fetched only when the section nears the viewport, so seven
    Instagram iframes never sit in the critical path. */
 .ig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px;align-items:start;margin:38px auto 32px;max-width:1180px;text-align:left}
 .ig-grid .instagram-media{margin:0 !important;width:100% !important;min-width:0 !important;max-width:none !important;border-radius:2px !important}
-.ig-grid blockquote{border:1px solid #ded5cb;background:#fff;padding:22px;font-size:14px}
+.ig-grid blockquote{border:1px solid #e0d7cd;background:#fff;padding:0;margin:0;display:flex}.ig-grid blockquote a{display:flex;flex-direction:column;align-items:center;gap:13px;padding:44px 20px;width:100%;font-size:13px;letter-spacing:.3px;color:#50202c;text-align:center}.ig-grid blockquote a:before{content:'';width:27px;height:36px;background-color:#b84b30;-webkit-mask:url('assets/idaya-mark.svg') center/contain no-repeat;mask:url('assets/idaya-mark.svg') center/contain no-repeat}
 .ig-grid a{border-bottom:0;color:#50202c}
 .ig-follow{display:inline-block;font-size:14px;border-bottom:1px solid #50202c;padding-bottom:7px;color:#50202c}
 .ig-note{font-size:12px;color:#8a7d72;margin:26px 0 0}
-@media(max-width:760px){.ig-grid{grid-template-columns:1fr;gap:16px;margin-top:28px}.wordmark{gap:10px}.wordmark .mark{width:25px;height:36px}.footer-logo .mark{width:26px;height:38px}}
+@media(max-width:760px){.ig-grid{grid-template-columns:1fr;gap:16px;margin-top:28px}.wordmark{gap:9px}.wordmark .mark{width:26px;height:34px}.wordmark .wm-type{width:82px;height:54px}.footer-logo .mark{width:26px;height:34px}.footer-logo .wm-type{width:78px;height:51px}}
