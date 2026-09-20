@@ -44,3 +44,27 @@ main,header,footer{max-width:none;margin:0}
 .announcement,header,footer,.section,.social,.prototype,.hero-film{padding-left:max(5%,calc((100% - 1800px)/2));padding-right:max(5%,calc((100% - 1800px)/2))}
 .announcement span{right:max(5%,calc((100% - 1800px)/2))}
 }
+
+/* ── WhatsApp + email contact ───────────────────────────────────────────────
+   The mark sits on WhatsApp green (a logo, so exempt from contrast rules);
+   the moment it carries a text label it darkens to #0e7a6b so white copy
+   clears 4.5:1. */
+.wa-float{position:fixed;right:22px;bottom:22px;z-index:60;display:flex;align-items:center;justify-content:center;gap:0;min-width:58px;height:58px;padding:0 16px;border-radius:29px;background:#25d366;color:#fff;box-shadow:0 12px 30px -10px rgba(0,0,0,.55);transition:gap .25s,background .25s,transform .25s}
+.wa-float svg{width:27px;height:27px;flex:none;fill:currentColor}
+.wa-float span{max-width:0;opacity:0;overflow:hidden;white-space:nowrap;font-size:14px;font-weight:600;letter-spacing:.2px;transition:max-width .3s,opacity .2s}
+.wa-float:hover,.wa-float:focus-visible{background:#0e7a6b;transform:translateY(-2px)}
+.wa-float:hover span,.wa-float:focus-visible span{max-width:170px;opacity:1;margin-left:11px}
+.button.whatsapp{background:#0e7a6b;color:#fff}
+.visit-contact{display:flex;flex-direction:column;align-items:flex-start;gap:9px;margin-top:22px;font-size:14px}
+.visit-contact a{border-bottom:1px solid #b8a496;padding-bottom:3px}
+.visit-contact a:hover{border-bottom-color:#50202c}
+.footer-contact{display:flex;gap:22px;font-size:13px;flex-wrap:wrap}
+.footer-contact a{border-bottom:1px solid #cdc2b6;padding-bottom:3px}
+.footer-contact a:hover{border-bottom-color:#50202c}
+@media(max-width:760px){
+.wa-float{right:16px;bottom:16px;min-width:54px;height:54px;padding:0 14px}
+.wa-float svg{width:25px;height:25px}
+.wa-float span{display:none}
+.prototype{padding-right:84px}
+.footer-contact{gap:14px;font-size:12px}
+}
