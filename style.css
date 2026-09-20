@@ -68,3 +68,25 @@ main,header,footer{max-width:none;margin:0}
 .prototype{padding-right:84px}
 .footer-contact{gap:14px;font-size:12px}
 }
+
+/* ── Lotus mark ────────────────────────────────────────────────────────────
+   One SVG, painted with currentColor through a mask so it takes the gold,
+   cream or maroon of whatever it sits in. */
+.mark{display:inline-block;flex:none;background-color:currentColor;-webkit-mask:url('assets/idaya-mark.svg') center/contain no-repeat;mask:url('assets/idaya-mark.svg') center/contain no-repeat}
+.wordmark{display:flex;align-items:center;gap:15px}
+.wordmark .wm-text{display:block;font:inherit;letter-spacing:inherit;margin:0}
+.wordmark .mark{width:33px;height:48px}
+.footer-logo{display:flex;align-items:center;gap:13px}
+.footer-logo .mark{width:30px;height:43px}
+.dialog-mark{width:29px;height:42px;color:#50202c;margin-bottom:15px}
+
+/* ── Instagram showcase ────────────────────────────────────────────────────
+   embed.js is fetched only when the section nears the viewport, so seven
+   Instagram iframes never sit in the critical path. */
+.ig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px;align-items:start;margin:38px auto 32px;max-width:1180px;text-align:left}
+.ig-grid .instagram-media{margin:0 !important;width:100% !important;min-width:0 !important;max-width:none !important;border-radius:2px !important}
+.ig-grid blockquote{border:1px solid #ded5cb;background:#fff;padding:22px;font-size:14px}
+.ig-grid a{border-bottom:0;color:#50202c}
+.ig-follow{display:inline-block;font-size:14px;border-bottom:1px solid #50202c;padding-bottom:7px;color:#50202c}
+.ig-note{font-size:12px;color:#8a7d72;margin:26px 0 0}
+@media(max-width:760px){.ig-grid{grid-template-columns:1fr;gap:16px;margin-top:28px}.wordmark{gap:10px}.wordmark .mark{width:25px;height:36px}.footer-logo .mark{width:26px;height:38px}}

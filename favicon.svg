@@ -1,1 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#50202c"/><text x="32" y="47" text-anchor="middle" font-family="Georgia" font-size="46" fill="#fcfaf7">I</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 260" role="img" aria-label="IDAYA">
+  <path fill="#b84b30" d="M0,260 L0,92 C0,41 40,0 90,0 C140,0 180,41 180,92 L180,260 Z"/>
+  <path fill="none" stroke="#f2dfa6" stroke-width="7" stroke-linejoin="round"
+        d="M17,249 L17,100 C17,52 50,18 90,18 C130,18 163,52 163,100 L163,249 Z"/>
+  <g fill="#f2dfa6">
+    <path d="M90,88 C74,76 71,52 81,32 C85,25 95,25 99,32 C109,52 106,76 90,88 Z"/>
+    <path d="M90,88 C76,78 70,58 77,42 C81,36 89,37 92,43 C99,57 99,76 90,88 Z" transform="rotate(-34 90 88)"/>
+    <path d="M90,88 C104,78 110,58 103,42 C99,36 91,37 88,43 C81,57 81,76 90,88 Z" transform="rotate(34 90 88)"/>
+    <path d="M90,88 C78,80 73,64 79,52 C83,47 89,48 91,53 C97,64 97,79 90,88 Z" transform="rotate(-67 90 88)"/>
+    <path d="M90,88 C102,80 107,64 101,52 C97,47 91,48 89,53 C83,64 83,79 90,88 Z" transform="rotate(67 90 88)"/>
+    <path d="M77,88 C82,96 98,96 103,88 C98,92 82,92 77,88 Z"/>
+  </g>
+  <path fill="none" stroke="#f2dfa6" stroke-width="4.5" stroke-linecap="round" d="M90,90 C87,127 93,169 90,235"/>
+  <g fill="#f2dfa6">
+    <path d="M89,180 C67,166 41,171 30,191 C45,206 73,202 89,180 Z"/>
+    <path d="M91,150 C106,133 129,128 142,138 C132,159 108,166 91,150 Z"/>
+  </g>
+</svg>

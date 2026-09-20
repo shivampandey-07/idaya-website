@@ -20,3 +20,7 @@ document.querySelector('#note').addEventListener('input',syncWa);
 document.querySelectorAll('[data-enquire]').forEach(b=>b.addEventListener('click',syncWa));
 waSend.addEventListener('click',syncWa);
 syncWa();
+
+/* Instagram embeds: defer the third-party script until the section is near view. */
+const igGrid=document.querySelector('.ig-grid');
+if(igGrid){new IntersectionObserver((entries,obs)=>{if(entries[0].isIntersecting){obs.disconnect();const sc=document.createElement('script');sc.async=true;sc.src='https://www.instagram.com/embed.js';document.body.appendChild(sc);}},{rootMargin:'500px'}).observe(igGrid);}
