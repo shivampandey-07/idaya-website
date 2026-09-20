@@ -1,12 +1,19 @@
 # Deploy IDAYA
 
-This ZIP contains the complete standalone static website, including the uploaded hero video and all images. No dependencies or build step are required.
+This is the complete standalone static website, including the hero video and all images. No dependencies or build step are required.
 
-## GitHub Pages
-1. Extract the ZIP.
-2. Commit these files to your chosen GitHub repository. Keep index.html at the publishing root, or put everything in an idaya subfolder of an existing Pages site.
-3. In Settings > Pages, select Deploy from a branch, choose main and the root folder, then save.
-4. Wait for the Pages deployment to finish and open the URL GitHub displays.
+## Live site
+- Repository: https://github.com/shivampandey-07/idaya-website
+- Published page: https://shivampandey-07.github.io/idaya-website/
+
+GitHub Pages serves the `main` branch from the root folder. `.nojekyll` is present so Jekyll does not process the files.
+
+## Publishing an update
+1. Edit the files locally.
+2. `git add -A && git commit -m "..." && git push`
+3. Pages rebuilds automatically; the change is usually live within a minute.
+
+To move the site elsewhere, copy this folder to any static web server. All paths are relative, so it also works from a subdirectory.
 
 ## Project handoff
 - HTML, CSS and JavaScript are directly editable.
@@ -14,5 +21,5 @@ This ZIP contains the complete standalone static website, including the uploaded
 - Catalogue filters and the enquiry dialog work without a backend. Enquiries are copied and sent manually through Instagram.
 - No AI or ChatGPT branding appears on the page.
 - Catalogue images are credited illustrative references, not confirmed IDAYA products.
-- The site has not been committed or deployed to GitHub. Some Git blob objects were uploaded during an interrupted attempt, but the repository branch was not changed.
-- Your original GitHub Pages homepage was preserved.
+- The page is marked `noindex,nofollow` while it is a preview. Remove that meta tag in `index.html` when the site is ready to be found in search.
+- The separate `shivampandey-07.github.io` homepage repository is untouched.
