@@ -30,3 +30,21 @@ if(igGrids.length){const obs=new IntersectionObserver((entries,o)=>{if(entries.s
 /* Header lifts off the page once it is no longer at the top of the document. */
 const hdr=document.querySelector('header');
 if(hdr){const stick=()=>hdr.classList.toggle('stuck',window.scrollY>4);addEventListener('scroll',stick,{passive:true});stick();}
+
+/* Reveal-on-scroll: each marked element animates once, then stops being watched. */
+const revealables=document.querySelectorAll('[data-reveal]');
+if(revealables.length){
+  if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches){
+    revealables.forEach(el=>el.classList.add('in'));
+  }else{
+    const ro=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{rootMargin:'0px 0px -6% 0px',threshold:.06});
+    revealables.forEach(el=>ro.observe(el));
+  }
+}
+
+/* Failsafe: nothing stays invisible because an observer never fired. */
+addEventListener('load',()=>setTimeout(()=>{
+  document.querySelectorAll('[data-reveal]:not(.in)').forEach(el=>{
+    if(el.getBoundingClientRect().top < innerHeight*1.4) el.classList.add('in');
+  });
+},1200));
