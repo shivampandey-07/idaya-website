@@ -25,10 +25,15 @@ To move the site elsewhere, copy this folder to any static web server. All paths
 
 ## Project handoff
 - HTML, CSS and JavaScript are directly editable.
-- The hero video autoplays silently and loops. iOS refuses autoplay outright in
-  Low Power Mode, so if `play()` is refused a gold play cue appears over the
-  film and a tap anywhere on the hero starts it; otherwise no control is shown.
-  Reduced-motion settings show the poster instead.
+- The hero video autoplays silently and loops, with no visible control. iOS
+  refuses autoplay outright in Low Power Mode and nothing in the page can
+  overrule that, so `app.js` retries on the visitor's first touch - beginning
+  to scroll is enough, and it starts unprompted. Until that touch the poster
+  stands in.
+- The film ignores `prefers-reduced-motion` deliberately: it autoplays even for
+  visitors who have Reduce Motion on, because the client asked for autoplay
+  with no button. Every other animation on the page still honours the setting.
+  To give the film back to it, gate `resumeFilm()` on the media query again.
 - The enquiry dialog works without a backend, and each look's enquiry carries that post's link, so the boutique knows which look is meant. Enquiries go out over WhatsApp or are copied and pasted into Instagram.
 - The bridal/pret/couture filter bar was removed: every post on the account is bridal, so two of the three filters were labelling bridal looks as something else. Once IDAYA points at pret and couture posts, the filter can come back (it is in git history at `dcf5aaa`).
 - The collection is seven Instagram embeds of @idaya_delhi posts, not hosted photography; the separate showcase section was folded into it. To feature different looks, swap the `data-instgrm-permalink`, the matching `href` and the `data-enquire` value on that card in `index.html`; the post must be public for the embed to render.

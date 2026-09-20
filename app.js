@@ -1,35 +1,26 @@
 const dialog=document.querySelector('#enquiry');let selection='';document.querySelectorAll('[data-enquire]').forEach(button=>button.addEventListener('click',()=>{selection=button.dataset.enquire;document.querySelector('#enquiry-caption').textContent='Your interest: '+selection;document.querySelector('#copy-status').textContent='';dialog.showModal()}));document.querySelector('.close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()}});document.querySelector('#copy').addEventListener('click',async()=>{const message=buildEnquiry();try{await navigator.clipboard.writeText(message);document.querySelector('#copy-status').textContent='Copied. Open Instagram and paste this into your message to IDAYA.'}catch{document.querySelector('#copy-status').textContent='Please copy this message: '+message}});
 const film=document.querySelector('#hero-video');
-const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 let filmVisible=true;
 film.muted=true;
-/* The film stays still for more reasons than one: iOS refuses autoplay outright
-   in Low Power Mode, and a visitor with Reduce Motion on gets no autoplay by our
-   own choice below. Neither is something the page can feature-detect, and a
-   refusal is not always a rejected promise, so rather than reason about the
-   cause the cue goes up whenever the film is not running - there is always a
-   way in. */
-const playCue=document.querySelector('.film-play');
-const hero=document.querySelector('.hero-film');
-const showCue=()=>{playCue.hidden=false;hero.classList.add('film-blocked');};
-const hideCue=()=>{playCue.hidden=true;hero.classList.remove('film-blocked');};
-const startFilm=()=>{film.play().catch(()=>{});};
-playCue.addEventListener('click',startFilm);
-hero.addEventListener('click',e=>{if(!playCue.hidden&&!e.target.closest('a,button'))startFilm();});
-film.addEventListener('playing',hideCue);
-const resumeFilm=()=>{if(!reducedMotion.matches&&filmVisible&&!document.hidden)film.play().catch(showCue);};
-/* Reduce Motion means do not move things at people, not refuse to play a film
-   they ask for, so it offers the cue instead of silently sitting on the poster. */
-if(reducedMotion.matches){film.autoplay=false;film.pause();showCue();}else{resumeFilm();}
-reducedMotion.addEventListener('change',e=>{if(e.matches){film.pause();showCue();}else resumeFilm();});
-/* Safety net: a stalled download and a policy we cannot detect look identical to
-   the visitor. If it is not running by now, offer the cue whatever the cause. */
-setTimeout(()=>{if(film.paused&&filmVisible)showCue();},2500);
+/* The film runs by itself wherever it is allowed to. Where it is not - iOS
+   refuses autoplay outright in Low Power Mode, and there is no way to talk it
+   round - we do not ask the visitor to press anything. We retry on their first
+   touch instead: beginning to scroll grants the activation play() needs, so on
+   a handset the film starts as soon as they touch the screen, which is both
+   immediate and invisible. Listening capture-side means a touch that lands on a
+   link counts too. */
+const GESTURES=['touchstart','touchend','pointerdown','click','keydown'];
+const dropGestures=()=>GESTURES.forEach(g=>removeEventListener(g,onGesture,true));
+function onGesture(){film.play().then(dropGestures).catch(()=>{});}
+GESTURES.forEach(g=>addEventListener(g,onGesture,true));
+film.addEventListener('playing',dropGestures);
+const resumeFilm=()=>{if(filmVisible&&!document.hidden)film.play().catch(()=>{});};
+resumeFilm();
 new IntersectionObserver(entries=>{filmVisible=entries[0].isIntersecting;if(!filmVisible)film.pause();else resumeFilm();},{threshold:.1}).observe(film);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)film.pause();else resumeFilm();});
 /* A source that fails still shows its poster, so leave the element visible and
-   only take the cue down: there is nothing left to start. */
-film.addEventListener('error',hideCue);
+   stop waiting for a gesture that has nothing to start. */
+film.addEventListener('error',dropGestures);
 
 /* Shared enquiry text: the clipboard copy and the WhatsApp deep link must not drift apart. */
 const WA_NUMBER='918287746401';
