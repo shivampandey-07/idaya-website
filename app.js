@@ -1,4 +1,4 @@
-const dialog=document.querySelector('#enquiry');let selection='';document.querySelectorAll('[data-enquire]').forEach(button=>button.addEventListener('click',()=>{selection=button.dataset.enquire;document.querySelector('#enquiry-caption').textContent='Your interest: '+selection;document.querySelector('#copy-status').textContent='';dialog.showModal()}));document.querySelector('.close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()}});document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(b=>{b.classList.toggle('selected',b===button);b.setAttribute('aria-pressed',String(b===button))});let count=0;document.querySelectorAll('.product').forEach(card=>{card.hidden=button.dataset.filter!=='All'&&card.dataset.category!==button.dataset.filter;if(!card.hidden)count++});document.querySelector('#result-count').textContent=count+(count===1?' look':' looks')}));document.querySelector('#copy').addEventListener('click',async()=>{const message=buildEnquiry();try{await navigator.clipboard.writeText(message);document.querySelector('#copy-status').textContent='Copied. Open Instagram and paste this into your message to IDAYA.'}catch{document.querySelector('#copy-status').textContent='Please copy this message: '+message}});
+const dialog=document.querySelector('#enquiry');let selection='';document.querySelectorAll('[data-enquire]').forEach(button=>button.addEventListener('click',()=>{selection=button.dataset.enquire;document.querySelector('#enquiry-caption').textContent='Your interest: '+selection;document.querySelector('#copy-status').textContent='';dialog.showModal()}));document.querySelector('.close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()}});document.querySelector('#copy').addEventListener('click',async()=>{const message=buildEnquiry();try{await navigator.clipboard.writeText(message);document.querySelector('#copy-status').textContent='Copied. Open Instagram and paste this into your message to IDAYA.'}catch{document.querySelector('#copy-status').textContent='Please copy this message: '+message}});
 const film=document.querySelector('#hero-video');
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 let filmVisible=true;
@@ -21,6 +21,12 @@ document.querySelectorAll('[data-enquire]').forEach(b=>b.addEventListener('click
 waSend.addEventListener('click',syncWa);
 syncWa();
 
-/* Instagram embeds: defer the third-party script until the section is near view. */
-const igGrid=document.querySelector('.ig-grid');
-if(igGrid){new IntersectionObserver((entries,obs)=>{if(entries[0].isIntersecting){obs.disconnect();const sc=document.createElement('script');sc.async=true;sc.src='https://www.instagram.com/embed.js';document.body.appendChild(sc);}},{rootMargin:'500px'}).observe(igGrid);}
+/* Instagram embeds: defer the third-party script until the first grid nears view.
+   Both the collection cards and the showcase are embeds now, so whichever the
+   visitor reaches first pulls embed.js in for both. */
+const igGrids=document.querySelectorAll('.products, .ig-grid');
+if(igGrids.length){const obs=new IntersectionObserver((entries,o)=>{if(entries.some(e=>e.isIntersecting)){o.disconnect();const sc=document.createElement('script');sc.async=true;sc.src='https://www.instagram.com/embed.js';document.body.appendChild(sc);}},{rootMargin:'500px'});igGrids.forEach(el=>obs.observe(el));}
+
+/* Header lifts off the page once it is no longer at the top of the document. */
+const hdr=document.querySelector('header');
+if(hdr){const stick=()=>hdr.classList.toggle('stuck',window.scrollY>4);addEventListener('scroll',stick,{passive:true});stick();}
