@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IDAYA film diagnostic</title><meta name="robots" content="noindex,nofollow">
+<style>
+:root{color-scheme:dark}
+body{margin:0;padding:22px 18px 40px;background:#2e1018;color:#f6e3ae;font:400 15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+h1{font:500 17px/1.3 inherit;margin:0 0 4px;letter-spacing:.02em}
+p.sub{margin:0 0 22px;color:#c8a44e;font-size:13px}
+.row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 14px;padding:10px 0;border-bottom:1px solid rgba(237,201,106,.18)}
+.k{color:#c8a44e;flex:none}
+.v{flex:1 1 auto;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;text-align:right;word-break:break-word}
+.v.bad{color:#ff9a8b}.v.good{color:#9ede9e}.v.warn{color:#ffd48b}
+video{width:100%;max-width:280px;margin:20px auto 0;display:block;background:#000;border:1px solid rgba(237,201,106,.3)}
+button{display:block;width:100%;margin-top:16px;padding:15px;background:#b8492f;color:#f6e3ae;border:0;border-radius:2px;font:500 13px/1 inherit;letter-spacing:.12em;text-transform:uppercase}
+#verdict{margin-top:24px;padding:16px;border:1px solid rgba(237,201,106,.4);background:rgba(0,0,0,.25);font-size:14px}
+</style></head><body>
+<h1>IDAYA film diagnostic</h1>
+<p class="sub">Open this on the phone that will not play the film, wait five seconds, then send a screenshot or tap Copy report.</p>
+<div id="out"></div>
+<video id="v" muted loop playsinline preload="auto" poster="assets/idaya-film-poster.jpg"><source src="assets/idaya-film.mp4?v=2" type="video/mp4"></video>
+<button id="manual">Tap to play manually</button>
+<button id="copy">Copy report</button>
+<div id="verdict">Running checks…</div>
+<script>
+const out=document.getElementById('out'),v=document.getElementById('v'),rows=[];
+const add=(k,val,cls)=>{rows.push(k+': '+val);out.insertAdjacentHTML('beforeend',
+  '<div class="row"><span class="k">'+k+'</span><span class="v '+(cls||'')+'">'+String(val).replace(/</g,'&lt;')+'</span></div>');};
+const NET=['EMPTY','IDLE','LOADING','NO_SOURCE'],RS=['NOTHING','METADATA','CURRENT','FUTURE','ENOUGH'];
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+add('Reduce Motion', reduced?'ON  ← blocks autoplay':'off', reduced?'bad':'good');
+add('Browser', /CriOS/.test(navigator.userAgent)?'Chrome on iOS (WebKit)':/Safari/.test(navigator.userAgent)&&/iPhone|iPad/.test(navigator.userAgent)?'Safari on iOS':navigator.userAgent.slice(0,40));
+add('Video muted', v.muted, v.muted?'good':'bad');
+add('Plays inline', v.playsInline, v.playsInline?'good':'bad');
+let verdict='';
+v.play().then(()=>{add('Autoplay','ALLOWED — it played','good');verdict='Autoplay works on this phone. If the real page still will not play, the cause is on the page, not the device.';report();})
+       .catch(e=>{add('Autoplay','REFUSED — '+e.name,'bad');
+         verdict=e.name==='NotAllowedError'
+           ?(reduced?'Reduce Motion is on, which is why it will not start by itself. Turn it off in Settings → Accessibility → Motion, or just tap the film — the play cue starts it.'
+                    :'The phone refused autoplay. On iPhone that is almost always Low Power Mode (Settings → Battery). Tapping the film starts it either way.')
+           :'The video itself failed to load — see the error and network rows above.';
+         report();});
+setTimeout(()=>{
+  add('readyState', RS[v.readyState]||v.readyState, v.readyState>=3?'good':'warn');
+  add('networkState', NET[v.networkState]||v.networkState);
+  add('Media error', v.error?('code '+v.error.code+' '+(v.error.message||'')):'none', v.error?'bad':'good');
+  add('Playing now', !v.paused, v.paused?'bad':'good');
+  add('Position', v.currentTime.toFixed(2)+'s', v.currentTime>0?'good':'warn');
+  fetch('assets/idaya-film.mp4?v=2',{headers:{Range:'bytes=0-99'}}).then(r=>{
+    add('File request', r.status+' '+r.statusText, r.status===206||r.status===200?'good':'bad');
+    add('Byte ranges', r.headers.get('accept-ranges')||(r.status===206?'yes (206)':'not advertised'), r.status===206?'good':'warn');
+    add('Served as', r.headers.get('content-type')||'—');
+    report();
+  }).catch(e=>{add('File request','FAILED — '+e.message,'bad');report();});
+},3000);
+function report(){document.getElementById('verdict').textContent=verdict||'Running checks…';}
+document.getElementById('manual').onclick=()=>v.play().then(()=>alert('Played on tap. The film works; only autoplay is blocked.')).catch(e=>alert('Even a tap failed: '+e.name+' — '+e.message));
+document.getElementById('copy').onclick=()=>navigator.clipboard.writeText(rows.join('\n')+'\n\n'+verdict).then(()=>alert('Copied. Paste it back to me.'),()=>alert(rows.join('\n')));
+</script></body></html>

@@ -3,23 +3,33 @@ const film=document.querySelector('#hero-video');
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 let filmVisible=true;
 film.muted=true;
-/* iOS refuses autoplay outright in Low Power Mode, muted and inline or not, so
-   the film has to offer a way in rather than sitting on its poster forever. The
-   cue appears only once play() has actually been refused, and a tap anywhere on
-   the hero works as well as the button itself. */
+/* The film stays still for more reasons than one: iOS refuses autoplay outright
+   in Low Power Mode, and a visitor with Reduce Motion on gets no autoplay by our
+   own choice below. Neither is something the page can feature-detect, and a
+   refusal is not always a rejected promise, so rather than reason about the
+   cause the cue goes up whenever the film is not running - there is always a
+   way in. */
 const playCue=document.querySelector('.film-play');
 const hero=document.querySelector('.hero-film');
-const showCue=()=>{playCue.hidden=false;};
+const showCue=()=>{playCue.hidden=false;hero.classList.add('film-blocked');};
+const hideCue=()=>{playCue.hidden=true;hero.classList.remove('film-blocked');};
 const startFilm=()=>{film.play().catch(()=>{});};
 playCue.addEventListener('click',startFilm);
 hero.addEventListener('click',e=>{if(!playCue.hidden&&!e.target.closest('a,button'))startFilm();});
-film.addEventListener('playing',()=>{playCue.hidden=true;});
+film.addEventListener('playing',hideCue);
 const resumeFilm=()=>{if(!reducedMotion.matches&&filmVisible&&!document.hidden)film.play().catch(showCue);};
-if(reducedMotion.matches){film.autoplay=false;film.pause();}else{resumeFilm();}
-reducedMotion.addEventListener('change',e=>{if(e.matches)film.pause();else resumeFilm();});
+/* Reduce Motion means do not move things at people, not refuse to play a film
+   they ask for, so it offers the cue instead of silently sitting on the poster. */
+if(reducedMotion.matches){film.autoplay=false;film.pause();showCue();}else{resumeFilm();}
+reducedMotion.addEventListener('change',e=>{if(e.matches){film.pause();showCue();}else resumeFilm();});
+/* Safety net: a stalled download and a policy we cannot detect look identical to
+   the visitor. If it is not running by now, offer the cue whatever the cause. */
+setTimeout(()=>{if(film.paused&&filmVisible)showCue();},2500);
 new IntersectionObserver(entries=>{filmVisible=entries[0].isIntersecting;if(!filmVisible)film.pause();else resumeFilm();},{threshold:.1}).observe(film);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)film.pause();else resumeFilm();});
-film.addEventListener('error',()=>{film.style.visibility='hidden';});
+/* A source that fails still shows its poster, so leave the element visible and
+   only take the cue down: there is nothing left to start. */
+film.addEventListener('error',hideCue);
 
 /* Shared enquiry text: the clipboard copy and the WhatsApp deep link must not drift apart. */
 const WA_NUMBER='918287746401';
